@@ -1,0 +1,112 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>自定义抽签</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            height: 100vh;
+            background-color: #f0f0f0;
+        }
+        .container {
+            text-align: center;
+            background-color: white;
+            padding: 20px;
+            border-radius: 10px;
+            box-shadow: 0px 0px 10px rgba(0, 0, 0, 0.1);
+        }
+        input[type="text"] {
+            width: 80%;
+            padding: 10px;
+            margin-top: 20px;
+            font-size: 16px;
+            border-radius: 5px;
+            border: 1px solid #ccc;
+        }
+        button {
+            padding: 10px 20px;
+            font-size: 16px;
+            margin-top: 20px;
+            cursor: pointer;
+            border: none;
+            background-color: #007BFF;
+            color: white;
+            border-radius: 5px;
+            margin-right: 10px;
+        }
+        #result {
+            font-size: 24px;
+            margin-top: 20px;
+            color: #333;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <h1>自定义抽签</h1>
+        <input type="text" id="inputCountries" placeholder="请输入要抽取的内容，用英文逗号隔开">
+        <button id="startButton">开始抽签</button>
+        <button id="drawButton" disabled>抽签</button>
+        <button id="resetButton" disabled>重置</button>
+        <div id="result"></div>
+    </div>
+
+    <script>
+        let countries = [];
+        const resultDiv = document.getElementById('result');
+        const drawButton = document.getElementById('drawButton');
+        const resetButton = document.getElementById('resetButton');
+        const startButton = document.getElementById('startButton');
+        const inputCountries = document.getElementById('inputCountries');
+
+        startButton.addEventListener('click', function() {
+            const input = inputCountries.value.trim();
+            if (input === "") {
+                resultDiv.textContent = "请输入要抽取的内容！";
+                return;
+            }
+
+            countries = input.split(',').map(item => item.trim()).filter(item => item !== "");
+
+            if (countries.length === 0) {
+                resultDiv.textContent = "请提供有效的抽取内容！";
+                return;
+            }
+
+            resultDiv.textContent = "";
+            drawButton.disabled = false;
+            resetButton.disabled = false;
+            inputCountries.disabled = true;
+            startButton.disabled = true;
+        });
+
+        drawButton.addEventListener('click', function() {
+            if (countries.length === 0) {
+                resultDiv.textContent = "所有内容都已被抽取完毕！";
+                drawButton.disabled = true;
+                return;
+            }
+
+            const randomIndex = Math.floor(Math.random() * countries.length);
+            const selectedCountry = countries.splice(randomIndex, 1)[0];
+
+            resultDiv.textContent = `抽取的内容是：${selectedCountry}`;
+        });
+
+        resetButton.addEventListener('click', function() {
+            inputCountries.value = "";
+            inputCountries.disabled = false;
+            drawButton.disabled = true;
+            resetButton.disabled = true;
+            startButton.disabled = false;
+            resultDiv.textContent = "";
+            countries = [];
+        });
+    </script>
+</body>
+</html>
